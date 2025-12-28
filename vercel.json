@@ -3,6 +3,10 @@
   "name": "blockbuddies-website",
   "builds": [
     {
+      "src": "**/*.html",
+      "use": "@vercel/static"
+    },
+    {
       "src": "*.html",
       "use": "@vercel/static"
     },
