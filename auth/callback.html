@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Authorization - BlockBuddies4Life</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .callback-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .callback-message {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .callback-message h2 {
+            margin: 0 0 15px 0;
+            font-size: 28px;
+        }
+
+        .callback-message p {
+            margin: 10px 0;
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .code-display {
+            background: #2c3e50;
+            color: #2ecc71;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 15px 0;
+            word-break: break-all;
+            font-size: 14px;
+        }
+
+        .btn-home {
+            display: inline-block;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 15px 35px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>🎮 BlockBuddies4Life</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                    <li><a href="../terms.html">Terms</a></li>
+                    <li><a href="../privacy.html">Privacy</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="callback-container">
+                <div class="success-icon">✅</div>
+
+                <div class="callback-message">
+                    <h2>TikTok Authorization Successful!</h2>
+                    <p>Your BlockBuddies4Life app has been authorized with TikTok.</p>
+                    <p>The authorization callback was received successfully.</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>📋 What Happened?</h3>
+                    <p>TikTok redirected you here after authorizing the BlockBuddies4Life application. This confirms that the OAuth integration is working correctly.</p>
+                </div>
+
+                <div class="status" id="statusBox">
+                    <strong>⏳ App Review Status:</strong> Your TikTok app is currently under review. Once approved, you'll be able to use the API to post content automatically.
+                </div>
+
+                <div class="info-box" id="authCodeBox" style="display: none;">
+                    <h3>🔑 Authorization Code</h3>
+                    <p>Your authorization code:</p>
+                    <div class="code-display" id="authCode"></div>
+                    <p style="font-size: 14px; color: #7f8c8d; margin-top: 10px;">
+                        This code can be exchanged for an access token to make API calls.
+                    </p>
+                </div>
+
+                <a href="../index.html" class="btn-home">← Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BlockBuddies4Life</h3>
+                    <p>Epic gaming content for kids and teens</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <p>
+                        <a href="https://www.youtube.com/@BlockBuddies4Life" target="_blank">YouTube</a> |
+                        <a href="https://www.tiktok.com/@blockbuddies4life" target="_blank">TikTok</a>
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <p>
+                        <a href="../terms.html">Terms of Service</a> |
+                        <a href="../privacy.html">Privacy Policy</a>
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BlockBuddies4Life. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+        const error = urlParams.get('error');
+
+        // Display authorization code if present
+        if (code) {
+            document.getElementById('authCodeBox').style.display = 'block';
+            document.getElementById('authCode').textContent = code;
+        }
+
+        // Handle errors
+        if (error) {
+            const statusBox = document.getElementById('statusBox');
+            statusBox.style.background = '#f8d7da';
+            statusBox.style.borderColor = '#dc3545';
+            statusBox.style.color = '#721c24';
+            statusBox.innerHTML = `<strong>❌ Authorization Error:</strong> ${error} - ${urlParams.get('error_description') || 'Unknown error'}`;
+        }
+
+        // Log for debugging
+        console.log('OAuth Callback Parameters:', {
+            code: code ? '***' + code.slice(-4) : null,
+            state: state,
+            error: error
+        });
+    </script>
+</body>
+</html>
