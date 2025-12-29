@@ -128,11 +128,28 @@
 
                 <div class="info-box" id="authCodeBox" style="display: none;">
                     <h3>🔑 Authorization Code</h3>
-                    <p>Your authorization code:</p>
-                    <div class="code-display" id="authCode"></div>
-                    <p style="font-size: 14px; color: #7f8c8d; margin-top: 10px;">
-                        This code can be exchanged for an access token to make API calls.
-                    </p>
+                    <p>Copy these values to complete authorization:</p>
+                    <div style="margin: 15px 0;">
+                        <strong>Code:</strong>
+                        <div class="code-display" id="authCode" style="position: relative;">
+                            <button onclick="copyToClipboard('authCode')" style="position: absolute; right: 10px; top: 10px; padding: 5px 15px; background: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer;">Copy</button>
+                        </div>
+                    </div>
+                    <div style="margin: 15px 0;">
+                        <strong>State:</strong>
+                        <div class="code-display" id="stateCode" style="position: relative;">
+                            <button onclick="copyToClipboard('stateCode')" style="position: absolute; right: 10px; top: 10px; padding: 5px 15px; background: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer;">Copy</button>
+                        </div>
+                    </div>
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin-top: 20px; text-align: left;">
+                        <h4 style="margin-top: 0; color: #2e7d32;">📝 Next Steps:</h4>
+                        <ol style="margin: 10px 0; padding-left: 20px; color: #555;">
+                            <li>Open your terminal</li>
+                            <li>Navigate to: <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">cd /Users/jkw/yt-automation</code></li>
+                            <li>Run: <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">bun run packages/orchestrator/src/scripts/tiktok-complete-auth.ts &lt;code&gt; &lt;state&gt;</code></li>
+                            <li>Replace <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">&lt;code&gt;</code> and <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">&lt;state&gt;</code> with the values above</li>
+                        </ol>
+                    </div>
                 </div>
 
                 <a href="../index.html" class="btn-home">← Back to Home</a>
@@ -175,10 +192,18 @@
         const state = urlParams.get('state');
         const error = urlParams.get('error');
 
-        // Display authorization code if present
-        if (code) {
+        // Display authorization code and state if present
+        if (code && state) {
             document.getElementById('authCodeBox').style.display = 'block';
             document.getElementById('authCode').textContent = code;
+            document.getElementById('stateCode').textContent = state;
+
+            // Update success message
+            const callbackMessage = document.querySelector('.callback-message');
+            callbackMessage.innerHTML = `
+                <h2>🎉 Authorization Received!</h2>
+                <p>Copy the code and state below to complete setup.</p>
+            `;
         }
 
         // Handle errors
@@ -188,6 +213,27 @@
             statusBox.style.borderColor = '#dc3545';
             statusBox.style.color = '#721c24';
             statusBox.innerHTML = `<strong>❌ Authorization Error:</strong> ${error} - ${urlParams.get('error_description') || 'Unknown error'}`;
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.style.background = '#27ae60';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#2ecc71';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy. Please copy manually.');
+            });
         }
 
         // Log for debugging
